@@ -1,10 +1,11 @@
+using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SweperBackend.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
@@ -31,5 +32,15 @@ namespace SweperBackend.Controllers
             })
             .ToArray();
         }
+        [HttpPost()]
+        public async Task<string> PostAsync([FromBody]string token)
+        {
+            FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance
+      .VerifyIdTokenAsync(token);
+            string uid = decodedToken.Uid;
+            return uid;
+
+        }
+
     }
 }
