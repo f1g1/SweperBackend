@@ -53,6 +53,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//todo for prod turn this on
 //app.UseHttpsRedirection();
 
 app.UseAuthentication();
