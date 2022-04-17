@@ -2,8 +2,15 @@ using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using SweperBackend.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<SweperBackendContext>(options =>
+
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SweperBackendContext") ?? throw new InvalidOperationException("Connection string 'SweperBackendContext' not found.")));
 var services = builder.Services;
 var configuration = builder.Configuration;
 
