@@ -70,7 +70,7 @@ namespace SweperBackend.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<bool>> PostUser(User user)
         {
             user.DateCreated = DateTime.UtcNow;
             user.DateLastLogin = DateTime.UtcNow;
@@ -90,7 +90,7 @@ namespace SweperBackend.Controllers
                 return Ok();
             }
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return _context.User.Include(x => x.InitialForm).FirstOrDefault(x => x.Id == user.Id)?.InitialForm != null;
         }
 
         // DELETE: api/Users/5

@@ -10,6 +10,7 @@
     <PackageReference Include="FirebaseAdmin" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="6.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -17,5 +18,33 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
   </ItemGroup>
+	
+	
+	<!--<ItemGroup>
+		<Content Include="$(USERPROFILE)\.nuget\packages\microsoft.sqlserver.types\14.0.1016.290\nativeBinaries\**\*.dll">
+			<Link>SqlServerTypes\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Compile Include="$(USERPROFILE)\.nuget\packages\microsoft.sqlserver.types\14.0.1016.290\content\SqlServerTypes\Loader.cs" Link="Loader.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="C:\Users\George\.nuget\packages\microsoft.sqlserver.types\14.0.1016.290\nativeBinaries\x64\msvcr120.dll">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="C:\Users\George\.nuget\packages\microsoft.sqlserver.types\14.0.1016.290\nativeBinaries\x64\SqlServerSpatial140.dll">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="C:\Users\George\.nuget\packages\microsoft.sqlserver.types\14.0.1016.290\nativeBinaries\x86\msvcr120.dll">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="C:\Users\George\.nuget\packages\microsoft.sqlserver.types\14.0.1016.290\nativeBinaries\x86\SqlServerSpatial140.dll">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>-->
 
 </Project>

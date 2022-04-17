@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<SweperBackendContext>(options =>
 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SweperBackendContext") ?? throw new InvalidOperationException("Connection string 'SweperBackendContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SweperBackendContext"), x => x.UseNetTopologySuite()));
 var services = builder.Services;
 var configuration = builder.Configuration;
 
