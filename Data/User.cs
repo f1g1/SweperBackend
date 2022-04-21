@@ -15,6 +15,7 @@
 
         public InitialForm? InitialForm { get; set; }
         public List<UserPreferredLocation> PrefferedLocations { get; set; }
+        public List<RentItem> RentItems { get; set; }
 
         public DateTime? DateCreated { get; set; }
         public DateTime? DateLastLogin { get; set; }

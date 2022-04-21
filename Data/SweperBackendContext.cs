@@ -33,8 +33,14 @@ namespace SweperBackend.Data
 
             modelBuilder.Entity<UserPreferredLocation>()
                 .HasIndex(x => x.UserId);
+
+
+            modelBuilder.Entity<RentItem>()
+              .Property(x => x.Id)
+              .ValueGeneratedOnAdd();
         }
         public DbSet<User> User { get; set; }
         public DbSet<InitialForm> InitialForm { get; set; }
+        public DbSet<RentItem> RentItem { get; set; }
     }
 }

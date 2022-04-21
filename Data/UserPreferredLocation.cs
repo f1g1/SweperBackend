@@ -10,10 +10,5 @@ namespace SweperBackend.Data
         public int Radius { get; set; }
         public User User { get; set; }
         public DateTime DateCreated { get; set; }
-
-
     }
-
-
-
 }

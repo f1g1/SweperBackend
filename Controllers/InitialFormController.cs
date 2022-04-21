@@ -20,6 +20,14 @@ namespace SweperBackend.Controllers
         {
             _context = context;
         }
+
+        [HttpGet]
+        public async Task<ActionResult<bool>> CheckHasForm()
+        {
+            string email = await GetEmail();
+            User user = _context.User.Include(x => x.InitialForm).FirstOrDefault(x => x.Email == email);
+            return user.InitialForm != null;
+        }
         [HttpPost]
         public async Task<ActionResult<User>> PostForm(InitialFormUI initialFormUI)
         {
