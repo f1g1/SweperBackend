@@ -10,11 +10,26 @@ namespace SweperBackend.Automap
         public SweperProfile()
         {
 
-            CreateMap<RentItemUI, RentItem>()
-                .ForMember(x => x.Location, y => y.MapFrom(z => new Point(z.Latitude, z.Longitude) { SRID = 4326 }));
+            CreateMap<LocationUi,Point>()
+                .ConstructUsing(x=>new Point(0,0))
+                .ForMember(x => x.X, y => y.MapFrom(z => z.Latitude))
+                .ForMember(x => x.Y, y => y.MapFrom(z => z.Longitude))
+                .ReverseMap();
+
             CreateMap<RentItem, RentItemUI>()
-                .ForMember(x => x.Latitude, y => y.MapFrom(z => z.Location.PointOnSurface.X))
-                .ForMember(x => x.Longitude, y => y.MapFrom(z => z.Location.PointOnSurface.Y));
+                .ForMember(x => x.Images, y => y.MapFrom(z => z.RentItemImages))
+                .AfterMap((x, y) => y.Location.Radius=x.Radius);
+
+            CreateMap<RentItemUI, RentItem>()
+                .ForMember(x => x.RentItemImages, y => y.MapFrom(z => z.Images))
+                .AfterMap((x, y) => y.Radius=x.Location.Radius);
+
+            CreateMap<RentItemImage, ImageUi>()
+                .ForMember(x => x.base64, y => y.MapFrom(z => z.Base64))
+                .ForMember(x => x.index, y => y.MapFrom(z => z.Index))
+                .ReverseMap();
+
+
 
         }
 

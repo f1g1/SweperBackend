@@ -13,17 +13,19 @@ namespace SweperBackend.Controllers
         {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
-
+        private readonly ChatHub _chatHub;
         private readonly ILogger<WeatherForecastController> _logger;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger, ChatHub chatHub)
         {
+            _chatHub = chatHub;
             _logger = logger;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+            _chatHub.SendMessage("test", "test");
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
@@ -33,7 +35,7 @@ namespace SweperBackend.Controllers
             .ToArray();
         }
         [HttpPost()]
-        public async Task<string> PostAsync([FromBody]string token)
+        public async Task<string> PostAsync([FromBody] string token)
         {
             FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance
       .VerifyIdTokenAsync(token);

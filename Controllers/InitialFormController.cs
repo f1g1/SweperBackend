@@ -9,6 +9,7 @@ using SweperBackend.Data;
 
 namespace SweperBackend.Controllers
 {
+    [DisableRequestSizeLimit]
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
@@ -43,9 +44,10 @@ namespace SweperBackend.Controllers
                     PriceCategory = initialFormUI.PriceCategory,
                     SpaceCategory = initialFormUI.SizeCategory,
                     DateCreated = DateTime.UtcNow,
-                    DateLastModified = DateTime.UtcNow
+                    DateLastModified = DateTime.UtcNow,
+                    
                 });
-                var d = JsonConvert.DeserializeObject<List<Location>>(initialFormUI.Locations);
+                var d = JsonConvert.DeserializeObject<List<LocationUi>>(initialFormUI.Locations);
 
                 _context.AddRange(d.Select(x => new UserPreferredLocation()
                 {
@@ -74,20 +76,5 @@ namespace SweperBackend.Controllers
                     .VerifyIdTokenAsync(accessToken.Replace("Bearer ", ""));
             return ((string)decodedToken.Claims["email"]);
         }
-    }
-
-    public class Location
-    {
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
-        public int Radius { get; set; }
-    }
-
-    public class InitialFormUI
-    {
-        public string? UserId { get; set; }
-        public int PriceCategory { get; set; }
-        public int SizeCategory { get; set; }
-        public string? Locations { get; set; }
     }
 }
