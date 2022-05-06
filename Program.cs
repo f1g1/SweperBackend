@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using SignalRChat.Hubs;
 using SweperBackend.Automap;
@@ -80,6 +81,8 @@ if (app.Environment.IsDevelopment())
 
 //todo for prod turn this on
 //app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -27,7 +27,7 @@ namespace SweperBackend.Data
     public class RentItemImage
     {
         public int Id { get; set; }
-        public string Base64 { get; set; }
+        public string Path { get; set; }
         public int Index { get; set; }
         public string Timestamp { get; set; }
         public DateTime? DateCreated { get; set; }
