@@ -61,7 +61,7 @@ namespace SweperBackend.Controllers
                 rentItemToDb.DateLastModified = DateTime.UtcNow;
                 rentItemToDb.DateLastModified = DateTime.UtcNow;
                 rentItemToDb.RentItemImages = GetImages(rentItemToDb, rentItem.Images);
-                rentItemToDb.Location = new NetTopologySuite.Geometries.Point(rentItem.Location.Longitude, rentItem.Location.Longitude) { SRID = 4326 };
+                rentItemToDb.Location = new NetTopologySuite.Geometries.Point(rentItem.Location.Latitude, rentItem.Location.Longitude) { SRID = 4326 };
                 rentItemToDb.Radius = rentItem.Location.Radius;
                 _context.RentItem.Add(rentItemToDb);
             }

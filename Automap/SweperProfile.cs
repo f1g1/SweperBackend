@@ -13,8 +13,11 @@ namespace SweperBackend.Automap
             CreateMap<LocationUi, Point>()
                 .ConstructUsing(x => new Point(0, 0))
                 .ForMember(x => x.X, y => y.MapFrom(z => z.Latitude))
-                .ForMember(x => x.Y, y => y.MapFrom(z => z.Longitude))
-                .ReverseMap();
+                .ForMember(x => x.Y, y => y.MapFrom(z => z.Longitude));
+
+            CreateMap<Point, LocationUi>()
+                .ForMember(x => x.Latitude, y => y.MapFrom(z => z.X))
+                .ForMember(x => x.Longitude, y => y.MapFrom(z => z.Y));
 
             CreateMap<RentItem, RentItemUI>()
                 .ForMember(x => x.Images, y => y.MapFrom(z => z.RentItemImages))
