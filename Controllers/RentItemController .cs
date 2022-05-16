@@ -25,15 +25,15 @@ namespace SweperBackend.Controllers
         }
 
         [HttpGet("my")]
-        public async Task<ActionResult<List<RentItemUI>>> GetMyRentItemsAsync(/*int skip = 0, int take = 10*/)
+        public async Task<ActionResult<List<RentItemUI>>> GetMyRentItemsAsync(int skip = 0, int take = 10)
         {
             try
             {
                 var email = await GetEmail();
                 var z = _mapper.Map<List<RentItemUI>>(_context.RentItem.Include(x => x.RentItemImages)/*.Where(x => x.User.Email == email)*/
                     .OrderBy(x => x.DateCreated)
-                    .Skip(0)
-                    .Take(5)
+                    .Skip(skip)
+                    .Take(take)
                     .ToList());
 
                 return z;
@@ -45,6 +45,24 @@ namespace SweperBackend.Controllers
             return null;
 
         }
+
+        [HttpDelete("my/{id}")]
+        public async Task<ActionResult<RentItemUI>> PostRentItem(int id)
+        {
+            var email = await GetEmail();
+            var rentItem = _context.RentItem.Include(x => x.User)
+                .FirstOrDefault(x => x.Id == id && x.User.Email == email);
+            if (rentItem == null)
+            {
+                return NotFound();
+            }
+            _context.Remove(rentItem);
+            _context.SaveChanges();
+            return Ok();
+        }
+
+
+
         [HttpPost]
         public async Task<ActionResult<RentItemUI>> PostRentItem(RentItemUI rentItem)
         {

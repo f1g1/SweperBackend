@@ -36,7 +36,8 @@ namespace SweperBackend.Data
 
             modelBuilder.Entity<RentItem>()
            .HasMany(p => p.RentItemImages)
-           .WithOne(b => b.RentItem);
+           .WithOne(b => b.RentItem)
+           .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<RentItemImage>()
            .Property(x => x.Id)
