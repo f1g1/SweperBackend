@@ -30,7 +30,7 @@ namespace SweperBackend.Controllers
             return user.InitialForm != null;
         }
         [HttpPost]
-        public async Task<ActionResult<User>> PostForm(InitialFormUI initialFormUI)
+        public async Task<ActionResult<User>> PostForm(InitialFormUi initialFormUI)
         {
             var email = await GetEmail();
             User user = _context.User.Include(x => x.InitialForm).FirstOrDefault(x => x.Email == email);
@@ -64,8 +64,6 @@ namespace SweperBackend.Controllers
             {
                 return BadRequest();
             }
-
-
         }
 
         private async Task<string> GetEmail()

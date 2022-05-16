@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace SweperBackend.Data
 {
@@ -45,10 +41,15 @@ namespace SweperBackend.Data
             modelBuilder.Entity<RentItemImage>()
            .Property(x => x.Id)
            .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<UserRentItem>()
+              .Property(x => x.Id)
+              .ValueGeneratedOnAdd();
         }
         public DbSet<User> User { get; set; }
         public DbSet<InitialForm> InitialForm { get; set; }
         public DbSet<RentItem> RentItem { get; set; }
         public DbSet<RentItemImage> RentItemImage { get; set; }
+        public DbSet<UserRentItem> UserRentItem { get; set; }
     }
 }

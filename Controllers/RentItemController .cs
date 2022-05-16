@@ -3,9 +3,7 @@ using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Net.Http.Headers;
-using NetTopologySuite.Geometries;
 using SweperBackend.Data;
 using System.Drawing;
 
@@ -111,8 +109,6 @@ namespace SweperBackend.Controllers
             return imagesList;
         }
 
-
-
         private async Task<string> GetEmail()
         {
             var accessToken = Request.Headers[HeaderNames.Authorization].ToString();
@@ -125,6 +121,9 @@ namespace SweperBackend.Controllers
 
     public class RentItemUI
     {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
         public string City { get; set; }
         public string Currency { get; set; }
         public string Level { get; set; }

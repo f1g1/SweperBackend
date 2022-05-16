@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using SweperBackend.Data;
@@ -12,9 +13,10 @@ using SweperBackend.Data;
 namespace SweperBackend.Migrations
 {
     [DbContext(typeof(SweperBackendContext))]
-    partial class SweperBackendContextModelSnapshot : ModelSnapshot
+    [Migration("20220512051818_AddedUserRentITem")]
+    partial class AddedUserRentITem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,9 +80,6 @@ namespace SweperBackend.Migrations
                     b.Property<DateTime?>("DateLastModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Level")
                         .HasColumnType("nvarchar(max)");
 
@@ -101,9 +100,6 @@ namespace SweperBackend.Migrations
 
                     b.Property<int>("Surface")
                         .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
@@ -212,7 +208,6 @@ namespace SweperBackend.Migrations
             modelBuilder.Entity("SweperBackend.Data.UserRentItem", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("DateCreated")

@@ -1,6 +1,6 @@
 ﻿namespace SweperBackend.Controllers
 {
-    public class InitialFormUI
+    public class InitialFormUi
     {
         public string? UserId { get; set; }
         public int PriceCategory { get; set; }
