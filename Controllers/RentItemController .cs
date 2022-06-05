@@ -45,9 +45,34 @@ namespace SweperBackend.Controllers
             return null;
 
         }
+        [HttpGet("liked")]
+        public async Task<ActionResult<List<RentItemUI>>> GetLikedRentItemsAsync(int skip = 0, int take = 10)
+        {
+            try
+            {
+                var email = await GetEmail();
+                var z = _mapper.Map<List<RentItemUI>>(_context.UserRentItem.Where(x=>x.Liked==true)
+                    .Include(x => x.RentItem).ThenInclude(x => x.RentItemImages)
+                    .Where(x => x.UserId == email)
+                    .OrderBy(x => x.DateCreated)
+                    .Skip(skip)
+                    .Take(take)
+                    .ToList());
+
+                return z;
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return null;
+
+        }
+
+
 
         [HttpDelete("my/{id}")]
-        public async Task<ActionResult<RentItemUI>> PostRentItem(int id)
+        public async Task<ActionResult<RentItemUI>> DeleteItem(int id)
         {
             var email = await GetEmail();
             var rentItem = _context.RentItem.Include(x => x.User)
@@ -87,6 +112,53 @@ namespace SweperBackend.Controllers
             return z;
         }
 
+
+        [HttpPut]
+        public async Task<ActionResult<RentItemUI>> EditRentItem(RentItemUI rentItem)
+        {
+            var email = await GetEmail();
+            User user = _context.User.Include(x => x.InitialForm).FirstOrDefault(x => x.Email == email);
+            //todo this would be better into a transaction
+            var rentItemToEdit = _mapper.Map<RentItem>(rentItem);
+            var rentItemFromDb = _context.RentItem.FirstOrDefault(x => x.Id == rentItem.Id);
+
+            if (rentItemFromDb == null)
+                return NotFound();
+
+            if (user != null)
+            {
+                rentItemToEdit.User = user;
+                rentItemToEdit.DateCreated = DateTime.UtcNow;
+                rentItemToEdit.DateLastModified = DateTime.UtcNow;
+                rentItemToEdit.RentItemImages = GetImages(rentItemToEdit, rentItem.Images);
+                rentItemToEdit.Location = new NetTopologySuite.Geometries.Point(rentItem.Location.Latitude, rentItem.Location.Longitude) { SRID = 4326 };
+                rentItemToEdit.Radius = rentItem.Location.Radius;
+            }
+            HandleChanges(rentItemToEdit, rentItemFromDb);
+
+            _context.SaveChanges();
+            var z = _mapper.Map<RentItemUI>(rentItemFromDb);
+            return z;
+        }
+
+        private void HandleChanges(RentItem rentItemToEdit, RentItem rentItemFromDb)
+        {
+            rentItemFromDb.DateLastModified = DateTime.UtcNow;
+            rentItemFromDb.Location = rentItemToEdit.Location;
+            rentItemFromDb.Price = rentItemToEdit.Price;
+            rentItemFromDb.Description = rentItemToEdit.Description;
+            rentItemFromDb.Title = rentItemToEdit.Title;
+            rentItemFromDb.Rooms = rentItemToEdit.Rooms;
+            rentItemFromDb.Radius = rentItemToEdit.Radius;
+            rentItemFromDb.Surface = rentItemToEdit.Surface;
+            rentItemFromDb.City = rentItemToEdit.City;
+            rentItemFromDb.Currency = rentItemToEdit.Currency;
+            rentItemFromDb.Level = rentItemToEdit.Level;
+            rentItemFromDb.Neighborhood = rentItemToEdit.Neighborhood;
+            rentItemFromDb.RentItemImages = rentItemToEdit.RentItemImages;
+            rentItemFromDb.Type = rentItemToEdit.Type;
+        }
+
         private List<RentItemImage> GetImages(RentItem rentItemToDb, List<ImageUi> images)
         {
             Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
@@ -102,6 +174,9 @@ namespace SweperBackend.Controllers
             var imagesList = new List<RentItemImage>();
             for (int i = 0; i < images.Count; i++)
             {
+                if (!string.IsNullOrEmpty(images[i].path))
+                    continue;
+
                 var fullPath = Path.Combine(pathToSave, i.ToString());
                 var dbPath = Path.Combine(folderName, i.ToString() + fileType);
                 using (var stream = new MemoryStream())
@@ -112,7 +187,6 @@ namespace SweperBackend.Controllers
                     {
                         bm2.Save(fullPath + fileType);
                     }
-
                 }
 
                 imagesList.Add(new()
