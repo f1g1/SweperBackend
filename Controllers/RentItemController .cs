@@ -45,31 +45,6 @@ namespace SweperBackend.Controllers
             return null;
 
         }
-        [HttpGet("liked")]
-        public async Task<ActionResult<List<RentItemUI>>> GetLikedRentItemsAsync(int skip = 0, int take = 10)
-        {
-            try
-            {
-                var email = await GetEmail();
-                var z = _mapper.Map<List<RentItemUI>>(_context.UserRentItem.Where(x=>x.Liked==true)
-                    .Include(x => x.RentItem).ThenInclude(x => x.RentItemImages)
-                    .Where(x => x.UserId == email)
-                    .OrderBy(x => x.DateCreated)
-                    .Skip(skip)
-                    .Take(take)
-                    .ToList());
-
-                return z;
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return null;
-
-        }
-
-
 
         [HttpDelete("my/{id}")]
         public async Task<ActionResult<RentItemUI>> DeleteItem(int id)

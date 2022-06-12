@@ -30,11 +30,18 @@ namespace SweperBackend.Automap
             CreateMap<RentItemImage, ImageUi>()
                 .ForMember(x => x.index, y => y.MapFrom(z => z.Index))
                 .ForMember(x => x.path, y => y.MapFrom(z => z.Path))
-
                 .ReverseMap();
+            CreateMap<UserRentItem, UserRentItemUi>()
+                .ForMember(x => x.DateViewd, y => y.MapFrom(z => ConvertDatetimeToUnixTimeStamp(z.DateViewd.Value)))
+                .ForMember(x => x.DateInteraction, y => y.MapFrom(z => ConvertDatetimeToUnixTimeStamp(z.DateInteraction.Value)));
+        }
 
 
-
+        public static long ConvertDatetimeToUnixTimeStamp(DateTime date)
+        {
+            DateTime originDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            TimeSpan diff = date.ToUniversalTime() - originDate;
+            return (long)Math.Floor(diff.TotalSeconds);
         }
 
     }

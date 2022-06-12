@@ -1,4 +1,5 @@
-﻿using FirebaseAdmin.Auth;
+﻿using AutoMapper;
+using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
@@ -11,10 +12,12 @@ namespace SweperBackend.Controllers
     public class UserRentItemController : ControllerBase
     {
         private readonly SweperBackendContext _context;
+        private readonly IMapper _mapper;
 
-        public UserRentItemController(SweperBackendContext context)
+        public UserRentItemController(SweperBackendContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // POST: api/Users
@@ -30,7 +33,8 @@ namespace SweperBackend.Controllers
                 DateCreated = DateTime.Now,
                 DateInteraction = DateTimeOffset.FromUnixTimeMilliseconds(userRentItemUi.DateInteraction).DateTime,
                 DateViewd = DateTimeOffset.FromUnixTimeMilliseconds(userRentItemUi.DateViewd).DateTime,
-                RentItemId = userRentItemUi.RentItemId
+                RentItemId = userRentItemUi.RentItemId,
+                Liked = userRentItemUi.Liked
 
             };
 
@@ -38,6 +42,47 @@ namespace SweperBackend.Controllers
             _context.SaveChanges();
             return Ok();
         }
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<bool>> RemoveUserRentItem(string id)
+        {
+            var email = await GetEmail();
+            User user = _context.User.Include(x => x.InitialForm).FirstOrDefault(x => x.Email == email);
+            var userRentItem = _context.UserRentItem.Find(id);
+            if (userRentItem.UserId == user.Id)
+            {
+                _context.Remove(userRentItem);
+                _context.SaveChanges();
+            }
+            return Ok();
+        }
+
+        [HttpGet("my")]
+        public async Task<ActionResult<List<UserRentItemUi>>> GetLikedUserRentItemsAsync(int skip = 0, int take = 10)
+        {
+            try
+            {
+                var email = await GetEmail();
+                var user = _context.User.FirstOrDefault(x => x.Email == email);
+                var res = _mapper.Map<List<UserRentItemUi>>(_context.UserRentItem
+                   .Where(x => x.Liked == true)
+                   .Where(x => x.Removed == false)
+                   .Include(x => x.RentItem).ThenInclude(x => x.RentItemImages)
+                   .Where(x => x.UserId == user.Id)
+                   .OrderBy(x => x.DateCreated)
+                   .Skip(skip)
+                   .Take(take)
+                   .ToList());
+                return res;
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return null;
+
+        }
+
+
         private async Task<string> GetEmail()
         {
             var accessToken = Request.Headers[HeaderNames.Authorization].ToString();
