@@ -31,9 +31,12 @@ namespace SweperBackend.Automap
                 .ForMember(x => x.index, y => y.MapFrom(z => z.Index))
                 .ForMember(x => x.path, y => y.MapFrom(z => z.Path))
                 .ReverseMap();
+
             CreateMap<UserRentItem, UserRentItemUi>()
                 .ForMember(x => x.DateViewd, y => y.MapFrom(z => ConvertDatetimeToUnixTimeStamp(z.DateViewd.Value)))
                 .ForMember(x => x.DateInteraction, y => y.MapFrom(z => ConvertDatetimeToUnixTimeStamp(z.DateInteraction.Value)));
+
+            CreateMap<Message, MessageUi>();
         }
 
 

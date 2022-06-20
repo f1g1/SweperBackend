@@ -19,6 +19,7 @@ namespace SweperBackend.Data
 
         public Point Location { get; set; } = new Point(0, 0);
         public User User { get; set; }
+        public string UserId { get; set; }
         public int Radius { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DateLastLogin { get; set; }

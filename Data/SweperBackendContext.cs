@@ -46,11 +46,17 @@ namespace SweperBackend.Data
             modelBuilder.Entity<UserRentItem>()
               .Property(x => x.Id)
               .ValueGeneratedOnAdd();
+
+
+            modelBuilder.Entity<Message>()
+           .Property(x => x.Id)
+           .ValueGeneratedOnAdd();
         }
         public DbSet<User> User { get; set; }
         public DbSet<InitialForm> InitialForm { get; set; }
         public DbSet<RentItem> RentItem { get; set; }
         public DbSet<RentItemImage> RentItemImage { get; set; }
         public DbSet<UserRentItem> UserRentItem { get; set; }
+        public DbSet<Message> Message { get; set; }
     }
 }

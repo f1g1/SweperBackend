@@ -68,7 +68,7 @@ namespace SweperBackend.Controllers
                    .Where(x => x.Removed == false)
                    .Include(x => x.RentItem).ThenInclude(x => x.RentItemImages)
                    .Where(x => x.UserId == user.Id)
-                   .OrderBy(x => x.DateCreated)
+                   .OrderByDescending(x => x.DateLastChat ?? x.DateCreated)
                    .Skip(skip)
                    .Take(take)
                    .ToList());

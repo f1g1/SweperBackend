@@ -200,6 +200,7 @@ namespace SweperBackend.Controllers
         public int Surface { get; set; }
         public string Type { get; set; }
         public List<ImageUi> Images { get; set; }
+        public string UserId { get; set; }
 
 
         public LocationUi Location { get; set; } = new LocationUi();

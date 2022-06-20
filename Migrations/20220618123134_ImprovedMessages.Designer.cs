@@ -13,8 +13,8 @@ using SweperBackend.Data;
 namespace SweperBackend.Migrations
 {
     [DbContext(typeof(SweperBackendContext))]
-    [Migration("20220425070633_AddedRentImages")]
-    partial class AddedRentImages
+    [Migration("20220618123134_ImprovedMessages")]
+    partial class ImprovedMessages
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,11 +27,11 @@ namespace SweperBackend.Migrations
 
             modelBuilder.Entity("SweperBackend.Data.InitialForm", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
@@ -57,6 +57,55 @@ namespace SweperBackend.Migrations
                     b.ToTable("InitialForm");
                 });
 
+            modelBuilder.Entity("SweperBackend.Data.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateSentFromServer")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateServer")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateViewed")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsFromOwner")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Media")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RentItemId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserOwnerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserRenterId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RentItemId");
+
+                    b.HasIndex("UserOwnerId");
+
+                    b.HasIndex("UserRenterId");
+
+                    b.ToTable("Message");
+                });
+
             modelBuilder.Entity("SweperBackend.Data.RentItem", b =>
                 {
                     b.Property<int>("Id")
@@ -80,6 +129,9 @@ namespace SweperBackend.Migrations
                     b.Property<DateTime?>("DateLastModified")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Level")
                         .HasColumnType("nvarchar(max)");
 
@@ -100,6 +152,9 @@ namespace SweperBackend.Migrations
 
                     b.Property<int>("Surface")
                         .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
@@ -122,14 +177,14 @@ namespace SweperBackend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Base64")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Index")
                         .HasColumnType("int");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("RentItemId")
                         .HasColumnType("int");
@@ -205,6 +260,47 @@ namespace SweperBackend.Migrations
                     b.ToTable("UserPreferredLocation");
                 });
 
+            modelBuilder.Entity("SweperBackend.Data.UserRentItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateInteraction")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateRemoved")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateViewd")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Liked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Removed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("RentItemId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RentItemId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserRentItem");
+                });
+
             modelBuilder.Entity("SweperBackend.Data.InitialForm", b =>
                 {
                     b.HasOne("SweperBackend.Data.User", "User")
@@ -212,6 +308,29 @@ namespace SweperBackend.Migrations
                         .HasForeignKey("SweperBackend.Data.InitialForm", "UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SweperBackend.Data.Message", b =>
+                {
+                    b.HasOne("SweperBackend.Data.RentItem", "RentItem")
+                        .WithMany()
+                        .HasForeignKey("RentItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SweperBackend.Data.User", "UserOwner")
+                        .WithMany()
+                        .HasForeignKey("UserOwnerId");
+
+                    b.HasOne("SweperBackend.Data.User", "UserRenter")
+                        .WithMany()
+                        .HasForeignKey("UserRenterId");
+
+                    b.Navigation("RentItem");
+
+                    b.Navigation("UserOwner");
+
+                    b.Navigation("UserRenter");
                 });
 
             modelBuilder.Entity("SweperBackend.Data.RentItem", b =>
@@ -227,7 +346,8 @@ namespace SweperBackend.Migrations
                 {
                     b.HasOne("SweperBackend.Data.RentItem", "RentItem")
                         .WithMany("RentItemImages")
-                        .HasForeignKey("RentItemId");
+                        .HasForeignKey("RentItemId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("RentItem");
                 });
@@ -237,6 +357,23 @@ namespace SweperBackend.Migrations
                     b.HasOne("SweperBackend.Data.User", "User")
                         .WithMany("PrefferedLocations")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SweperBackend.Data.UserRentItem", b =>
+                {
+                    b.HasOne("SweperBackend.Data.RentItem", "RentItem")
+                        .WithMany()
+                        .HasForeignKey("RentItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SweperBackend.Data.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("RentItem");
 
                     b.Navigation("User");
                 });

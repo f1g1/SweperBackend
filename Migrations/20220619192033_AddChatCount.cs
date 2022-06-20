@@ -5,32 +5,32 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SweperBackend.Migrations
 {
-    public partial class AddRemovedColumnUserRentItem : Migration
+    public partial class AddChatCount : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<int>(
+                name: "ChatCount",
+                table: "UserRentItem",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
             migrationBuilder.AddColumn<DateTime>(
-                name: "DateRemoved",
+                name: "DateLastChat",
                 table: "UserRentItem",
                 type: "datetime2",
                 nullable: true);
-
-            migrationBuilder.AddColumn<bool>(
-                name: "Removed",
-                table: "UserRentItem",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "DateRemoved",
+                name: "ChatCount",
                 table: "UserRentItem");
 
             migrationBuilder.DropColumn(
-                name: "Removed",
+                name: "DateLastChat",
                 table: "UserRentItem");
         }
     }
