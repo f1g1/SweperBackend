@@ -1,4 +1,6 @@
-﻿namespace SweperBackend.Controllers
+﻿using SweperBackend.Data;
+
+namespace SweperBackend.Controllers
 {
     public class UserRentItemUi
     {
@@ -9,8 +11,9 @@
         public long DateInteraction { get; set; }
         public bool Liked { get; set; }
         public RentItemUI? RentItem { get; set; }
+        public UserUi? User { get; set; }
         public int ChatCount { get; set; }
-        public DateTime? DateLastChat { get; set; }
+        public long? DateLastChat { get; set; }
         public DateTime? DateCreated { get; set; }
 
     }

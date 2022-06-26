@@ -11,7 +11,6 @@
         public bool Removed { get; set; }
         public int ChatCount { get; set; }
 
-
         public DateTime? DateLastChat { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DateViewd { get; set; }

@@ -82,6 +82,36 @@ namespace SweperBackend.Controllers
 
         }
 
+        [HttpGet("byRentItem")]
+        public async Task<ActionResult<List<UserRentItemUi>>> GetLikedUserRentItemsAsync(int rentItemId, int skip = 0, int take = 10)
+        {
+            try
+            {
+                var email = await GetEmail();
+                var user = _context.User.FirstOrDefault(x => x.Email == email);
+                var res = _mapper.Map<List<UserRentItemUi>>(_context.UserRentItem
+                   .Where(x => x.Liked == true)
+                   .Where(x => x.Removed == false)
+                   .Include(x => x.RentItem).ThenInclude(x => x.RentItemImages)
+                   //.Include(x => x.User)
+                   .Where(x => x.RentItemId == rentItemId
+                    //we want to see chats only with people that are sending a message
+                    && x.ChatCount > 0)
+                   .OrderByDescending(x => x.DateLastChat ?? x.DateCreated)
+                   .Skip(skip)
+                   .Take(take)
+                   .ToList());
+                return res;
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return null;
+
+        }
+
+
 
         private async Task<string> GetEmail()
         {

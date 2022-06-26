@@ -25,6 +25,7 @@ namespace SweperBackend.Data
         public DateTime? DateLastLogin { get; set; }
         public DateTime? DateLastModified { get; set; }
         public List<RentItemImage> RentItemImages { get; set; }
+        public List<Message> Messages { get; set; }
     }
 
     public class RentItemImage

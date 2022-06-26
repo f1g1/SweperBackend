@@ -34,16 +34,20 @@ namespace SweperBackend.Automap
 
             CreateMap<UserRentItem, UserRentItemUi>()
                 .ForMember(x => x.DateViewd, y => y.MapFrom(z => ConvertDatetimeToUnixTimeStamp(z.DateViewd.Value)))
-                .ForMember(x => x.DateInteraction, y => y.MapFrom(z => ConvertDatetimeToUnixTimeStamp(z.DateInteraction.Value)));
+                .ForMember(x => x.DateInteraction, y => y.MapFrom(z => ConvertDatetimeToUnixTimeStamp(z.DateInteraction.Value)))
+                .ForMember(x => x.DateLastChat, y => y.MapFrom(z => ConvertDatetimeToUnixTimeStamp(z.DateLastChat)));
 
             CreateMap<Message, MessageUi>();
+            CreateMap<User, UserUi >();
         }
 
 
-        public static long ConvertDatetimeToUnixTimeStamp(DateTime date)
+        public static long? ConvertDatetimeToUnixTimeStamp(DateTime? date)
         {
+            if (!date.HasValue)
+                return null;
             DateTime originDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            TimeSpan diff = date.ToUniversalTime() - originDate;
+            TimeSpan diff = date.Value.ToUniversalTime() - originDate;
             return (long)Math.Floor(diff.TotalSeconds);
         }
 

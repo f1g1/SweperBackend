@@ -69,7 +69,7 @@ namespace SweperBackend.Controllers
                 UserOwnerId = messageUi.UserOwnerId,
                 IsFromOwner = messageUi.IsFromOwner,
 
-                RentItemId = messageUi.RentItemId,
+                RentItemId = messageUi.RentItemId,  
                 DateCreated = messageUi.DateCreated,
                 DateServer = DateTime.UtcNow,
                 Text = messageUi.Text,
