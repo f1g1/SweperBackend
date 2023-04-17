@@ -7,6 +7,7 @@
         public string UserOwnerId { get; set; }
         public bool IsFromOwner { get; set; }
         public int RentItemId { get; set; }
+        public string RentItemTitle { get; set; }
         public string Text { get; set; }
         public string Media { get; set; }
 
