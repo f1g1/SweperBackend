@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
+using SweperBackend.Controllers.UIData;
 using SweperBackend.Data;
 using System.Drawing;
 
@@ -14,7 +15,6 @@ namespace SweperBackend.Controllers
     [ApiController]
     public class RentItemController : ControllerBase
     {
-        private const string fileType = ".jpg";
         private readonly SweperBackendContext _context;
         private readonly IMapper _mapper;
 
@@ -35,7 +35,6 @@ namespace SweperBackend.Controllers
                     .Skip(skip)
                     .Take(take)
                     .ToList());
-
                 return z;
             }
             catch (Exception ex)
@@ -61,8 +60,6 @@ namespace SweperBackend.Controllers
             return Ok();
         }
 
-
-
         [HttpPost]
         public async Task<ActionResult<RentItemUI>> PostRentItem(RentItemUI rentItem)
         {
@@ -76,7 +73,7 @@ namespace SweperBackend.Controllers
                 rentItemToDb.DateCreated = DateTime.UtcNow;
                 rentItemToDb.DateLastModified = DateTime.UtcNow;
                 rentItemToDb.DateLastModified = DateTime.UtcNow;
-                rentItemToDb.RentItemImages = GetImages(rentItemToDb, rentItem.Images);
+                rentItemToDb.RentItemImages = ImageHandler.AddImages(rentItemToDb, rentItem.Images);
                 rentItemToDb.Location = new NetTopologySuite.Geometries.Point(rentItem.Location.Latitude, rentItem.Location.Longitude) { SRID = 4326 };
                 rentItemToDb.Radius = rentItem.Location.Radius;
                 _context.RentItem.Add(rentItemToDb);
@@ -95,8 +92,9 @@ namespace SweperBackend.Controllers
             User user = _context.User.Include(x => x.InitialForm).FirstOrDefault(x => x.Email == email);
             //todo this would be better into a transaction
             var rentItemToEdit = _mapper.Map<RentItem>(rentItem);
-            var rentItemFromDb = _context.RentItem.FirstOrDefault(x => x.Id == rentItem.Id);
 
+            var rentItemFromDb = _context.RentItem.Include(x => x.RentItemImages).FirstOrDefault(x => x.Id == rentItem.Id);
+            rentItemToEdit.RentItemImages = rentItemFromDb.RentItemImages;
             if (rentItemFromDb == null)
                 return NotFound();
 
@@ -105,7 +103,7 @@ namespace SweperBackend.Controllers
                 rentItemToEdit.User = user;
                 rentItemToEdit.DateCreated = DateTime.UtcNow;
                 rentItemToEdit.DateLastModified = DateTime.UtcNow;
-                rentItemToEdit.RentItemImages = GetImages(rentItemToEdit, rentItem.Images);
+                rentItemToEdit.RentItemImages = ImageHandler.UpdateImages(rentItemToEdit, rentItem.Images);
                 rentItemToEdit.Location = new NetTopologySuite.Geometries.Point(rentItem.Location.Latitude, rentItem.Location.Longitude) { SRID = 4326 };
                 rentItemToEdit.Radius = rentItem.Location.Radius;
             }
@@ -132,48 +130,7 @@ namespace SweperBackend.Controllers
             rentItemFromDb.Neighborhood = rentItemToEdit.Neighborhood;
             rentItemFromDb.RentItemImages = rentItemToEdit.RentItemImages;
             rentItemFromDb.Type = rentItemToEdit.Type;
-        }
-
-        private List<RentItemImage> GetImages(RentItem rentItemToDb, List<ImageUi> images)
-        {
-            Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-            var folderName = Path.Combine("RentItems", rentItemToDb.User.Id, unixTimestamp.ToString());
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folderName);
-
-
-            bool exists = Directory.Exists(pathToSave);
-
-            if (!exists)
-                Directory.CreateDirectory(pathToSave);
-
-            var imagesList = new List<RentItemImage>();
-            for (int i = 0; i < images.Count; i++)
-            {
-                if (!string.IsNullOrEmpty(images[i].path))
-                    continue;
-
-                var fullPath = Path.Combine(pathToSave, i.ToString());
-                var dbPath = Path.Combine(folderName, i.ToString() + fileType);
-                using (var stream = new MemoryStream())
-                {
-                    stream.Write(Convert.FromBase64String(images[i].base64));
-
-                    using (Bitmap bm2 = new Bitmap(stream))
-                    {
-                        bm2.Save(fullPath + fileType);
-                    }
-                }
-
-                imagesList.Add(new()
-                {
-                    DateCreated = DateTime.UtcNow,
-                    Path = dbPath,
-                    Index = i,
-                    Timestamp = images[i].timestamp,
-                    RentItem = rentItemToDb
-                });
-            }
-            return imagesList;
+            rentItemFromDb.RentItemImages = rentItemToEdit.RentItemImages;
         }
 
         private async Task<string> GetEmail()
@@ -184,37 +141,6 @@ namespace SweperBackend.Controllers
                     .VerifyIdTokenAsync(accessToken.Replace("Bearer ", ""));
             return ((string)decodedToken.Claims["email"]);
         }
-    }
-
-    public class RentItemUI
-    {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string City { get; set; }
-        public string Currency { get; set; }
-        public string Level { get; set; }
-        public string Neighborhood { get; set; }
-        public int Price { get; set; }
-        public int Rooms { get; set; }
-        public int Surface { get; set; }
-        public string Type { get; set; }
-        public List<ImageUi> Images { get; set; }
-        public string UserId { get; set; }
-
-
-        public LocationUi Location { get; set; } = new LocationUi();
-        public DateTime? DateCreated { get; set; }
-        public DateTime? DateLastLogin { get; set; }
-        public DateTime? DateLastModified { get; set; }
-    }
-
-    public class ImageUi
-    {
-        public int index { get; set; }
-        public string base64 { get; set; }
-        public string path { get; set; }
-        public string timestamp { get; set; }
     }
 
 }

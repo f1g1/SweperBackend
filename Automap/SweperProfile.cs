@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using NetTopologySuite.Geometries;
 using SweperBackend.Controllers;
+using SweperBackend.Controllers.UIData;
 using SweperBackend.Data;
 
 namespace SweperBackend.Automap
@@ -20,8 +21,9 @@ namespace SweperBackend.Automap
                 .ForMember(x => x.Longitude, y => y.MapFrom(z => z.Y));
 
             CreateMap<RentItem, RentItemUI>()
-                .ForMember(x => x.Images, y => y.MapFrom(z => z.RentItemImages))
+                .ForMember(x => x.Images, y => y.MapFrom(z => z.RentItemImages.OrderBy(x=>x.Index)))
                 .AfterMap((x, y) => y.Location.Radius = x.Radius);
+
 
             CreateMap<RentItemUI, RentItem>()
                 .ForMember(x => x.RentItemImages, y => y.MapFrom(z => z.Images))
@@ -38,7 +40,7 @@ namespace SweperBackend.Automap
                 .ForMember(x => x.DateLastChat, y => y.MapFrom(z => ConvertDatetimeToUnixTimeStamp(z.DateLastChat)));
 
             CreateMap<Message, MessageUi>();
-            CreateMap<User, UserUi >();
+            CreateMap<User, UserUi>();
         }
 
 
