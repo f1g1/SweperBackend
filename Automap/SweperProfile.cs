@@ -22,7 +22,9 @@ namespace SweperBackend.Automap
 
             CreateMap<RentItem, RentItemUI>()
                 .ForMember(x => x.Images, y => y.MapFrom(z => z.RentItemImages.OrderBy(x=>x.Index)))
-                .AfterMap((x, y) => y.Location.Radius = x.Radius);
+                .AfterMap((x, y) => { y.Location.Radius = x.Radius;
+                    y.Location.Latitude = x.Location.Coordinate.X;
+                    y.Location.Longitude= x.Location.Coordinate.Y; });
 
 
             CreateMap<RentItemUI, RentItem>()
